@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API = "https://menuo.zayamrock.com/api"; // 🔧 عدل الرابط
+const API = "https://menuo.zayamrock.com/api";  
+
+
+
 
 export default function MenuManagement() {
   const [categories, setCategories] = useState([]);
