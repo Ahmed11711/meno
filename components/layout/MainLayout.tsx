@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import logo from '../../src/assets/social/logo.PNG';
 
 interface Product {
   id: number;
@@ -15,7 +16,7 @@ interface Category {
   name: string;
 }
 
-const API = 'http://127.0.0.1:8000/api';
+const API = 'https://menuo.zayamrock.com/api';
 
 const MainWebsitePage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -57,7 +58,9 @@ const MainWebsitePage: React.FC = () => {
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-3 group">
               <div className="size-10 text-primary bg-primary/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined !text-[28px]">local_bar</span>
+                {/* <span className="material-symbols-outlined !text-[28px]">local_bar</span>
+                 */}
+                 <img src={logo} alt="" />
               </div>
               <h1 className="text-xl font-bold tracking-tight">ركن العصائر والأراجيل</h1>
             </div>
