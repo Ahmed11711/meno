@@ -1,0 +1,7 @@
+{
+  "name": "Leszest Cafe - Juice & Shisha",
+  "description": "A premium web application for a juice and shisha bar including a customer-facing menu and a comprehensive admin dashboard for management.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
