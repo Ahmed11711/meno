@@ -1,59 +1,68 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API = "https://menuo.zayamrock.com/api";  
-
-
-
+const API = "https://menuo.zayamrock.com/api";
 
 export default function MenuManagement() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedCat, setSelectedCat] = useState(null);
 
-  // 🎯 نموذج إضافة قسم
   const [catName, setCatName] = useState("");
+  const [editCatId, setEditCatId] = useState(null);
 
-  // 🎯 نموذج المنتج
   const [form, setForm] = useState({
+    id: null,
     name: "",
     price: "",
     description: "",
     image: null,
   });
 
-  // 🔥 أول تحميل
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  // 📌 جلب الأقسام
+  /* ================= Categories ================= */
+
   const fetchCategories = async () => {
     const res = await axios.get(`${API}/categories`);
     setCategories(res.data);
-    if (res.data.length) setSelectedCat(res.data[0].id);
-    if (res.data.length) fetchProducts(res.data[0].id);
+    if (res.data.length) {
+      setSelectedCat(res.data[0].id);
+      fetchProducts(res.data[0].id);
+    }
   };
 
-  // 📌 جلب المنتجات حسب القسم
+  const addCategory = async () => {
+    if (!catName.trim()) return;
+    await axios.post(`${API}/categories`, { name: catName });
+    setCatName("");
+    fetchCategories();
+  };
+
+  const updateCategory = async (id) => {
+    await axios.put(`${API}/categories/${id}`, { name: catName });
+    setEditCatId(null);
+    setCatName("");
+    fetchCategories();
+  };
+
+  const deleteCategory = async (id) => {
+    if (!confirm("حذف القسم؟")) return;
+    await axios.delete(`${API}/categories/${id}`);
+    fetchCategories();
+  };
+
+  /* ================= Products ================= */
+
   const fetchProducts = async (id) => {
     setSelectedCat(id);
     const res = await axios.get(`${API}/categories/${id}/products`);
     setProducts(res.data);
   };
 
-  // ➕ إضافة قسم
-  const addCategory = async () => {
-    if (!catName.trim()) return alert("ادخل اسم القسم");
-    await axios.post(`${API}/categories`, { name: catName });
-    setCatName("");
-    fetchCategories();
-  };
-
-  // ➕ إضافة منتج
-  const addProduct = async () => {
-    if (!selectedCat) return alert("اختر قسم أولاً");
-
+  const submitProduct = async () => {
     const fd = new FormData();
     fd.append("name", form.name);
     fd.append("price", form.price);
@@ -61,125 +70,170 @@ export default function MenuManagement() {
     fd.append("category_id", selectedCat);
     if (form.image) fd.append("image", form.image);
 
-    await axios.post(`${API}/products`, fd, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    if (form.id) {
+      await axios.post(`${API}/products/${form.id}?_method=PUT`, fd);
+    } else {
+      await axios.post(`${API}/products`, fd);
+    }
 
-    setForm({ name: "", price: "", description: "", image: null });
+    resetProductForm();
     fetchProducts(selectedCat);
-    alert("تم إضافة المنتج ✨");
   };
 
+  const editProduct = (p) => {
+    setForm({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      description: p.description,
+      image: null,
+    });
+  };
+
+  const deleteProduct = async (id) => {
+    if (!confirm("حذف المنتج؟")) return;
+    await axios.delete(`${API}/products/${id}`);
+    fetchProducts(selectedCat);
+  };
+
+  const resetProductForm = () => {
+    setForm({ id: null, name: "", price: "", description: "", image: null });
+  };
+
+  /* ================= UI ================= */
+
   return (
-    <div style={{ padding: 20, display: "flex", gap: 40 }}>
-
-      {/* ⭐ إضافة قسم */}
-      <div style={{ width: "30%", border: "1px solid #ddd", padding: 20, borderRadius: 12 }}>
-        <h2>📁 الأقسام</h2>
-
-        <input
-          placeholder="اسم القسم"
-          value={catName}
-          onChange={(e) => setCatName(e.target.value)}
-          style={{ width: "100%", padding: 10 }}
-        />
-        <button onClick={addCategory} style={{ marginTop: 10, width: "100%" }}>
-          ➕ إضافة قسم
-        </button>
-
-        <hr style={{ margin: "20px 0" }} />
-
-        {categories.map((c) => (
-          <div
-            key={c.id}
-            onClick={() => fetchProducts(c.id)}
-            style={{
-              padding: 10,
-              borderRadius: 8,
-              cursor: "pointer",
-              background: c.id === selectedCat ? "#eee" : "#fff",
-              marginBottom: 5,
-            }}
-          >
-            {c.name}
-          </div>
-        ))}
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">إدارة القائمة</h1>
+        <p className="text-sm text-accent">CRUD كامل للأقسام والمنتجات</p>
       </div>
 
-      {/* ⭐ إضافة منتج */}
-      <div style={{ width: "70%", border: "1px solid #ddd", padding: 20, borderRadius: 12 }}>
-        <h2>🍹 إضافة منتج</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* ===== Categories ===== */}
+        <div className="bg-white dark:bg-dark-card p-6 rounded-2xl border">
+          <h2 className="font-bold mb-4">📁 الأقسام</h2>
 
-        {!selectedCat ? (
-          <p>اختر قسم أولاً</p>
-        ) : (
-          <>
+          <input
+            className="w-full h-10 px-4 rounded-xl mb-2"
+            placeholder="اسم القسم"
+            value={catName}
+            onChange={(e) => setCatName(e.target.value)}
+          />
+
+          {editCatId ? (
+            <button
+              onClick={() => updateCategory(editCatId)}
+              className="w-full h-10 rounded-xl bg-green-500 text-white"
+            >
+              حفظ التعديل
+            </button>
+          ) : (
+            <button
+              onClick={addCategory}
+              className="w-full h-10 rounded-xl bg-primary text-white"
+            >
+              إضافة قسم
+            </button>
+          )}
+
+          <div className="mt-4 space-y-2">
+            {categories.map((c) => (
+              <div
+                key={c.id}
+                className={`flex justify-between items-center px-4 py-2 rounded-xl cursor-pointer
+                  ${
+                    selectedCat === c.id ? "bg-primary/10" : "hover:bg-light-bg"
+                  }
+                `}
+                onClick={() => fetchProducts(c.id)}
+              >
+                <span>{c.name}</span>
+                <div className="flex gap-2 text-xs">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditCatId(c.id);
+                      setCatName(c.name);
+                    }}
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteCategory(c.id);
+                    }}
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ===== Products ===== */}
+        <div className="lg:col-span-2 bg-white dark:bg-dark-card p-6 rounded-2xl border">
+          <h2 className="font-bold mb-4">🍹 المنتجات</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
             <input
               placeholder="اسم المنتج"
+              className="h-10 px-4 rounded-xl"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              style={{ width: "100%", padding: 10, marginBottom: 10 }}
             />
-
             <input
-              placeholder="السعر"
               type="number"
+              placeholder="السعر"
+              className="h-10 px-4 rounded-xl"
               value={form.price}
               onChange={(e) => setForm({ ...form, price: e.target.value })}
-              style={{ width: "100%", padding: 10, marginBottom: 10 }}
             />
+          </div>
 
-            <textarea
-              placeholder="الوصف"
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              style={{ width: "100%", padding: 10, marginBottom: 10 }}
-            />
+          <textarea
+            placeholder="الوصف"
+            className="w-full p-3 rounded-xl mb-3"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
 
-            <input
-              type="file"
-              onChange={(e) => setForm({ ...form, image: e.target.files[0] })}
-              style={{ marginBottom: 10 }}
-            />
+          <input
+            type="file"
+            onChange={(e) => setForm({ ...form, image: e.target.files[0] })}
+            className="mb-3"
+          />
 
-            <button onClick={addProduct} style={{ width: "100%" }}>
-              ➕ إضافة المنتج
-            </button>
-          </>
-        )}
+          <button
+            onClick={submitProduct}
+            className="w-full h-11 rounded-xl bg-primary text-white font-bold"
+          >
+            {form.id ? "تعديل المنتج" : "إضافة المنتج"}
+          </button>
 
-        <hr style={{ margin: "20px 0" }} />
-
-        {/* ⭐ عرض المنتجات داخل القسم */}
-        <h3>📦 منتجات القسم</h3>
-        {products.length ? (
-          products.map((p) => (
-            <div
-              key={p.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                borderBottom: "1px solid #eee",
-                padding: "10px 0",
-                gap: 10,
-              }}
-            >
-              <img
-                src={p.image}
-                alt=""
-                width={60}
-                height={60}
-                style={{ borderRadius: 8, objectFit: "cover" }}
-              />
-              <div style={{ flex: 1 }}>
-                <b>{p.name}</b>
-                <p>{p.price} ريال</p>
+          {/* Products List */}
+          <div className="mt-6 space-y-3">
+            {products.map((p) => (
+              <div
+                key={p.id}
+                className="flex items-center gap-4 p-3 rounded-xl hover:bg-light-bg"
+              >
+                <img
+                  src={p.image}
+                  className="w-12 h-12 rounded-xl object-cover"
+                />
+                <div className="flex-1">
+                  <div className="font-bold text-sm">{p.name}</div>
+                  <div className="text-xs text-accent">{p.price} جنيه</div>
+                </div>
+                <button onClick={() => editProduct(p)}>✏️</button>
+                <button onClick={() => deleteProduct(p.id)}>🗑️</button>
               </div>
-            </div>
-          ))
-        ) : (
-          <p>لا يوجد منتجات</p>
-        )}
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

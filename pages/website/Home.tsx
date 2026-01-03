@@ -8,6 +8,7 @@ const Home: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<CategoryType>(CategoryType.ALL);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+console.log("HOME RENDERED");
 
   useEffect(() => {
     const fetch = async () => {
@@ -20,35 +21,51 @@ const Home: React.FC = () => {
   }, [activeCategory]);
 
   return (
+    
     <div className="max-w-7xl mx-auto px-4 pb-20">
+<div className="h-[300px] bg-red-600 text-white flex items-center justify-center text-3xl">
+  HERO TEST
+</div>
       {/* Hero Banner */}
-      <section className="relative h-[450px] md:h-[550px] mt-6 rounded-[2rem] overflow-hidden group shadow-2xl">
-        <div className="absolute inset-0 bg-gradient-to-t from-dark-bg/95 via-dark-bg/40 to-dark-bg/70 z-10" />
-        <img 
-          src="https://images.unsplash.com/photo-1547514701-42782101795e?auto=format&fit=crop&q=80&w=1200" 
-          alt="Juice Banner" 
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2s]"
-        />
-        
-        <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-6">
-          <div className="mb-8 w-40 opacity-90 drop-shadow-xl animate-fade-in">
-             <div className="size-20 bg-primary/20 backdrop-blur-xl border border-primary/30 rounded-3xl mx-auto flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined !text-[48px] text-primary">local_bar</span>
-             </div>
-          </div>
-          <span className="bg-primary/20 backdrop-blur-md text-primary-light border border-primary/40 px-6 py-2 rounded-full text-xs md:text-sm font-bold text-primary mb-6 uppercase tracking-widest shadow-lg">طازج ومنعش 100%</span>
-          <h1 className="text-white text-4xl md:text-7xl font-black mb-6 leading-tight drop-shadow-2xl">
-            قائمة العصائر والمشروبات
-          </h1>
-          <p className="text-white/80 text-lg md:text-xl max-w-2xl font-medium leading-relaxed mb-10 drop-shadow-lg">
-            استمتع بأفضل المشروبات الطازجة، الكوكتيلات المميزة، والأراجيل الفاخرة في أجواء راقية ومريحة.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            {/* <button className="h-14 px-10 bg-primary text-white font-bold rounded-2xl shadow-xl shadow-primary/30 hover:bg-primary-dark transition-all transform hover:-translate-y-1">اطلب الآن</button> */}
-            <button className="h-14 px-10 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-2xl hover:bg-white/20 transition-all">تصفح العروض</button>
-          </div>
-        </div>
-      </section>
+      
+  {/* Hero Section */}
+<section className="relative h-[75vh] min-h-[500px] w-full overflow-hidden isolate">
+  {/* Background Image */}
+  <img
+    src="https://images.unsplash.com/photo-1547514701-42782101795e?auto=format&fit=crop&q=80&w=1600"
+    alt="Hero"
+    className="absolute inset-0 w-full h-full object-cover scale-105"
+  />
+
+  {/* Overlay */}
+  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/60 z-10" />
+
+  {/* Content */}
+  <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-6">
+    <div className="mb-6 size-24 bg-primary/20 backdrop-blur-xl border border-primary/30 rounded-3xl flex items-center justify-center shadow-xl">
+      <span className="material-symbols-outlined text-primary text-[52px]">
+        local_bar
+      </span>
+    </div>
+
+    <span className="bg-primary/20 backdrop-blur-md text-primary-light border border-primary/40 px-6 py-2 rounded-full text-sm font-bold mb-6 tracking-widest">
+      طازج ومنعش 100%
+    </span>
+
+    <h1 className="text-white text-4xl md:text-6xl font-black mb-6 drop-shadow-2xl">
+      قائمة العصائر والمشروبات
+    </h1>
+
+    <p className="text-white/85 text-lg md:text-xl max-w-2xl mb-10">
+      استمتع بأفضل المشروبات الطازجة، الكوكتيلات المميزة، والأراجيل الفاخرة
+    </p>
+
+    <button className="h-14 px-10 bg-primary text-white font-bold rounded-2xl shadow-xl hover:bg-primary-dark transition">
+      تصفح القائمة
+    </button>
+  </div>
+</section>
+
 
       {/* Category Tabs */}
       <section className="sticky top-[72px] z-30 mt-10 py-4 bg-light-bg/80 dark:bg-dark-bg/80 backdrop-blur-md -mx-4 px-4 overflow-x-auto no-scrollbar">
