@@ -1,8 +1,13 @@
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import MainWebsitePage from './components/layout/MainLayout';
-import AdminDashboard from './pages/admin/Dashboard';
-import MenuManagement from './pages/admin/MenuManagement';
-import AdminLayout from './components/layout/AdminLayout';
+import {
+  HashRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import MainWebsitePage from "./components/layout/MainLayout";
+import AdminDashboard from "./pages/admin/Dashboard";
+import MenuManagement from "./pages/admin/MenuManagement";
+import AdminLayout from "./components/layout/AdminLayout";
 
 const App = () => {
   return (
@@ -20,7 +25,5 @@ const App = () => {
     </Router>
   );
 };
-
- 
 
 export default App;
