@@ -228,6 +228,7 @@ export default function MenuManagement() {
                   <div className="font-bold text-sm">{p.name}</div>
                   <div className="text-xs text-accent">{p.price} جنيه</div>
                 </div>
+
                 <button onClick={() => editProduct(p)}>✏️</button>
                 <button onClick={() => deleteProduct(p.id)}>🗑️</button>
               </div>
