@@ -15,6 +15,7 @@ export default function MenuManagement() {
     id: null,
     name: "",
     price: "",
+    calories: "",
     description: "",
     image: null,
   });
@@ -66,6 +67,7 @@ export default function MenuManagement() {
     const fd = new FormData();
     fd.append("name", form.name);
     fd.append("price", form.price);
+    fd.append("calories", form.calories);
     fd.append("description", form.description);
     fd.append("category_id", selectedCat);
     if (form.image) fd.append("image", form.image);
@@ -85,6 +87,7 @@ export default function MenuManagement() {
       id: p.id,
       name: p.name,
       price: p.price,
+      calories: p.calories,
       description: p.description,
       image: null,
     });
@@ -97,7 +100,14 @@ export default function MenuManagement() {
   };
 
   const resetProductForm = () => {
-    setForm({ id: null, name: "", price: "", description: "", image: null });
+    setForm({
+      id: null,
+      name: "",
+      price: "",
+      calories: "",
+      description: "",
+      image: null,
+    });
   };
 
   /* ================= UI ================= */
@@ -177,7 +187,7 @@ export default function MenuManagement() {
         <div className="lg:col-span-2 bg-white dark:bg-dark-card p-6 rounded-2xl border">
           <h2 className="font-bold mb-4">🍹 المنتجات</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
             <input
               placeholder="اسم المنتج"
               className="h-10 px-4 rounded-xl"
@@ -190,6 +200,13 @@ export default function MenuManagement() {
               className="h-10 px-4 rounded-xl"
               value={form.price}
               onChange={(e) => setForm({ ...form, price: e.target.value })}
+            />
+            <input
+              type="number"
+              placeholder="السعرات الحرارية"
+              className="h-10 px-4 rounded-xl"
+              value={form.calories}
+              onChange={(e) => setForm({ ...form, calories: e.target.value })}
             />
           </div>
 
@@ -226,7 +243,9 @@ export default function MenuManagement() {
                 />
                 <div className="flex-1">
                   <div className="font-bold text-sm">{p.name}</div>
-                  <div className="text-xs text-accent">{p.price} جنيه</div>
+                  <div className="text-xs text-accent">
+                    {p.price} جنيه • {p.calories} كالوري
+                  </div>
                 </div>
 
                 <button onClick={() => editProduct(p)}>✏️</button>

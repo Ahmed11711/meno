@@ -37,7 +37,7 @@ export default function MainWebsitePage() {
       .then((res) => {
         const data = Array.isArray(res.data) ? res.data[0] : res.data;
         setSettings({
-          site_name: data?.site_name || "ركن العصائر والأراجيل",
+          site_name: data?.site_name || "مقهى رعاة لتقديم المشروبات",
           logo: data?.logo || "",
           primary_color: data?.primary_color || "#0ea5e9",
           accent_color: data?.accent_color || "#f97316",
